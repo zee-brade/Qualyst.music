@@ -1,0 +1,809 @@
+/* =========================================================
+   SPOTIZEE — 1:1 SPOTIFY MOBILE LAYOUT
+   Palet 60/30/10:
+   Latar: #0C1B33 | Permukaan: #16294A | Teks: #EEF1F6
+   Aksen: #8FB4E3 | Redup: #8793A8
+   ========================================================= */
+:root {
+  --bg-main: #0C1B33;
+  --bg-surface: #16294A;
+  --bg-surface-hover: #1E355E;
+  --text-main: #EEF1F6;
+  --accent: #8FB4E3;
+  --text-muted: #8793A8;
+  --nav-height: 58px;
+  --mini-height: 56px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.app-container {
+  padding: 14px 14px 135px 14px;
+  min-height: 100vh;
+}
+
+.tab-view {
+  display: none;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+/* ==================== TOP HEADERS & PILLS ==================== */
+.sp-home-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  position: sticky;
+  top: 0;
+  background: rgba(12, 27, 51, 0.94);
+  backdrop-filter: blur(10px);
+  padding: 6px 0;
+  z-index: 20;
+}
+
+.avatar-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-main);
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.header-pills::-webkit-scrollbar { display: none; }
+
+.pill {
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: none;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pill.active {
+  background: var(--accent);
+  color: var(--bg-main);
+  font-weight: 700;
+}
+
+/* ==================== SPOTIFY 2x4 COMPACT GRID ==================== */
+.sp-quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.sp-quick-item {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border-radius: 5px;
+  overflow: hidden;
+  height: 54px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sp-quick-item:active {
+  background: var(--bg-surface-hover);
+}
+
+.sp-quick-item img {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sp-quick-item span {
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-main);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ==================== SECTION HEADERS & SHELF ==================== */
+.sp-section-header {
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-main);
+}
+
+.sp-horizontal-shelf {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+}
+.sp-horizontal-shelf::-webkit-scrollbar { display: none; }
+
+.shelf-card {
+  width: 136px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.shelf-card img {
+  width: 136px;
+  height: 136px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--bg-surface);
+  margin-bottom: 7px;
+}
+
+.shelf-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shelf-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== VERTICAL TRACK LIST ==================== */
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 2px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.track-item:active {
+  background: rgba(22, 41, 74, 0.55);
+}
+
+.track-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--bg-surface);
+  flex-shrink: 0;
+}
+
+.track-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-item.playing .track-title {
+  color: var(--accent);
+}
+
+.track-artist {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-more {
+  color: var(--text-muted);
+  font-size: 16px;
+  padding: 6px;
+}
+
+.loader-text {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 28px 0;
+  font-size: 13px;
+}
+
+/* ==================== TAB 2: CARI ==================== */
+.sp-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-top: 4px;
+}
+
+.sp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sp-header-left h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sp-search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--text-main);
+  color: var(--bg-main);
+  border-radius: 6px;
+  padding: 11px 12px;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.icon-search-dark {
+  width: 20px;
+  height: 20px;
+  color: var(--bg-main);
+  flex-shrink: 0;
+}
+
+.sp-search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--bg-main);
+}
+
+.sp-search-bar input::placeholder {
+  color: #465775;
+  font-weight: 500;
+}
+
+#clear-search {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bg-main);
+}
+
+.sub-heading {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.sp-genre-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sp-genre-tile {
+  position: relative;
+  height: 92px;
+  background: var(--bg-surface);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.sp-genre-tile span {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  position: relative;
+  z-index: 2;
+}
+
+.tilted-art {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  width: 58px;
+  height: 58px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--bg-main);
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(25deg);
+  box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ==================== TAB 3: KOLEKSI KAMU ==================== */
+.sp-icon-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sp-liked-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sp-liked-cover {
+  width: 62px;
+  height: 62px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #274880, var(--accent));
+  color: var(--text-main);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sp-liked-meta h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sp-liked-meta p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.pin-mark {
+  color: var(--accent);
+}
+
+/* ==================== FLOATING MINI PLAYER ==================== */
+.sp-mini-player {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  bottom: calc(var(--nav-height) + 4px);
+  height: var(--mini-height);
+  background: var(--bg-surface);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 0 8px;
+  box-shadow: 0 6px 18px rgba(4, 10, 22, 0.7);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.mini-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.mini-left img {
+  width: 42px;
+  height: 42px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mini-text {
+  min-width: 0;
+}
+
+.mini-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-artist {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sp-glyph-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 21px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sp-glyph-btn.liked {
+  color: var(--accent);
+}
+
+.play-glyph {
+  font-size: 19px;
+}
+
+.mini-progress-track {
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: rgba(135, 147, 168, 0.25);
+}
+
+.mini-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--text-main);
+}
+
+/* ==================== SPOTIFY BOTTOM NAVBAR ==================== */
+.sp-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: linear-gradient(to top, #071122 80%, rgba(12, 27, 51, 0.94));
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 60;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 33.3%;
+}
+
+.nav-item svg {
+  width: 23px;
+  height: 23px;
+}
+
+.nav-item.active {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* ==================== FULL-SCREEN NOW PLAYING ==================== */
+.sp-full-player {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #16294A 0%, #0C1B33 65%);
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow-y: auto;
+  padding: 14px 22px 44px 22px;
+}
+
+.sp-full-player.open {
+  transform: translateY(0);
+}
+
+.fp-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.fp-header-center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.fp-sub {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+}
+
+.fp-header-center strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 2px;
+}
+
+.sp-stream-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(143, 180, 227, 0.18);
+  color: var(--accent);
+}
+
+.fp-cover-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 340px;
+  margin: 0 auto 28px auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 16px 38px rgba(4, 10, 22, 0.72);
+}
+
+.fp-cover-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fp-track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.fp-track-info {
+  flex: 1;
+  min-width: 0;
+  padding-right: 12px;
+}
+
+.fp-track-info h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fp-track-info p {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.sp-like-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  background: transparent;
+  color: var(--text-main);
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sp-like-circle.liked {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-main);
+}
+
+/* Scrubber */
+.fp-scrubber input[type="range"] {
+  width: 100%;
+  accent-color: var(--text-main);
+  height: 3.5px;
+}
+
+.fp-timestamps {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* 5-Button Spotify Transport */
+.fp-transport {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 18px 0 28px 0;
+}
+
+.sp-ctrl-sub {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.sp-ctrl-sub.active {
+  color: var(--accent);
+}
+
+.active-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.sp-ctrl-sub.active .active-dot {
+  background: var(--accent);
+}
+
+.sp-ctrl-main {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.sp-play-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: var(--text-main);
+  color: var(--bg-main);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Lyrics Card */
+.sp-lyrics-card {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.lyrics-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+.lyrics-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(12, 27, 51, 0.55);
+  color: var(--accent);
+}
+
+.lyrics-scroll {
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+
+.lyric-line {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.lyric-line.active {
+  color: var(--text-main);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 126px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-main);
+  color: var(--bg-main);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  z-index: 200;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
