@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0C1B33">
+  <title>SpotiZee</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="app-container">
+
+    <!-- ==================== TAB 1: HOME ==================== -->
+    <section id="view-home" class="tab-view active">
+      <!-- Spotify Sticky Top Bar: Avatar + Filter Pills -->
+      <header class="sp-home-header">
+        <div class="avatar-badge" id="greeting-avatar" title="Personal Space">Z</div>
+        <div class="header-pills">
+          <button class="pill active" data-query="Bleachers The Cure">Semua</button>
+          <button class="pill" data-query="The Cure hits">The Cure</button>
+          <button class="pill" data-query="Bleachers songs">Bleachers</button>
+          <button class="pill" data-query="sad indie synth pop">Late Night</button>
+          <button class="pill" data-query="lagu viral indonesia 2026">Indo Hits</button>
+        </div>
+      </header>
+
+      <!-- Spotify 2x4 Compact Horizontal Grid (8 Kartu) -->
+      <div class="sp-quick-grid" id="quick-grid"></div>
+
+      <!-- Rak Horizontal Khas Spotify -->
+      <div class="sp-section-header">
+        <h2 class="section-title" id="greeting-text">Pilihan Malam Ini</h2>
+      </div>
+      <div class="sp-horizontal-shelf" id="home-shelf"></div>
+
+      <!-- Daftar Lagu Vertikal -->
+      <div class="sp-section-header">
+        <h2 class="section-title">Rekomendasi Untukmu</h2>
+      </div>
+      <div class="track-list" id="home-track-list">
+        <div class="loader-text">Memuat katalog musik...</div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: CARI ==================== -->
+    <section id="view-search" class="tab-view">
+      <header class="sp-page-header">
+        <div class="sp-header-left">
+          <div class="avatar-badge">Z</div>
+          <h1>Cari</h1>
+        </div>
+      </header>
+
+      <!-- Search Bar Kontras Tinggi Khas Spotify -->
+      <div class="sp-search-bar">
+        <svg viewBox="0 0 24 24" class="icon-search-dark"><path fill="currentColor" d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 101.414-1.414l-4.344-4.344a9.157 9.157 0 002.077-5.816c0-5.14-4.226-9.28-9.407-9.28zm-7.407 9.279c0-4.006 3.302-7.28 7.407-7.28s7.407 3.274 7.407 7.28-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.28z"/></svg>
+        <input type="text" id="search-input" placeholder="Apa yang ingin kamu dengarkan?" autocomplete="off">
+        <button id="clear-search" class="hidden">&times;</button>
+      </div>
+
+      <!-- Grid Kategori dengan Thumbnail Miring Khas Spotify -->
+      <div id="search-genres-wrap">
+        <h3 class="sub-heading">Jelajahi semua</h3>
+        <div id="search-genres" class="sp-genre-grid">
+          <div class="sp-genre-tile" data-query="The Cure post punk">
+            <span>Post-Punk</span>
+            <div class="tilted-art">TC</div>
+          </div>
+          <div class="sp-genre-tile" data-query="Bleachers indie pop">
+            <span>Indie Pop</span>
+            <div class="tilted-art">BL</div>
+          </div>
+          <div class="sp-genre-tile" data-query="sad indie synth pop">
+            <span>Late Night</span>
+            <div class="tilted-art">LN</div>
+          </div>
+          <div class="sp-genre-tile" data-query="chill lofi beats">
+            <span>Lo-Fi Chill</span>
+            <div class="tilted-art">LF</div>
+          </div>
+          <div class="sp-genre-tile" data-query="top hits indonesia">
+            <span>Pop Indo</span>
+            <div class="tilted-art">ID</div>
+          </div>
+          <div class="sp-genre-tile" data-query="anime opening ost">
+            <span>Anime OST</span>
+            <div class="tilted-art">JP</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="track-list" id="search-track-list"></div>
+    </section>
+
+    <!-- ==================== TAB 3: KOLEKSI KAMU ==================== -->
+    <section id="view-library" class="tab-view">
+      <header class="sp-page-header">
+        <div class="sp-header-left">
+          <div class="avatar-badge">Z</div>
+          <h1>Koleksi Kamu</h1>
+        </div>
+        <button id="toggle-api-box" class="sp-icon-circle" title="Pengaturan API Key">⚙</button>
+      </header>
+
+      <div class="header-pills" style="margin-bottom:14px;">
+        <span class="pill active">Playlist</span>
+        <span class="pill" id="lib-total-badge">0 Lagu</span>
+      </div>
+
+      <!-- Pinned Liked Songs Row (Khas Spotify Library) -->
+      <div class="sp-liked-row" id="pinned-liked-row">
+        <div class="sp-liked-cover">♥</div>
+        <div class="sp-liked-meta">
+          <h3>Lagu yang Disukai</h3>
+          <p><span class="pin-mark">📌</span> Playlist • <span id="liked-count">0 lagu</span></p>
+        </div>
+      </div>
+
+      <div class="track-list" id="library-track-list"></div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FLOATING MINI PLAYER ==================== -->
+  <div id="mini-player" class="sp-mini-player hidden">
+    <div class="mini-left" id="open-full-player">
+      <img id="mini-cover" src="" alt="Cover">
+      <div class="mini-text">
+        <div id="mini-title" class="mini-title">Judul Lagu</div>
+        <div id="mini-artist" class="mini-artist">Nama Artis</div>
+      </div>
+    </div>
+    <div class="mini-actions">
+      <button id="mini-like-btn" class="sp-glyph-btn" aria-label="Suka">♡</button>
+      <button id="mini-play-btn" class="sp-glyph-btn play-glyph" aria-label="Play">▶</button>
+    </div>
+    <div class="mini-progress-track">
+      <div id="mini-progress-bar" class="mini-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SPOTIFY BOTTOM NAVBAR ==================== -->
+  <nav class="sp-bottom-nav">
+    <button class="nav-item active" data-target="view-home">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 1.515a3 3 0 00-3 0L3 5.845a2 2 0 00-1 1.732V21a1 1 0 001 1h6a1 1 0 001-1v-6h4v6a1 1 0 001 1h6a1 1 0 001-1V7.577a2 2 0 00-1-1.732l-7.5-4.33z"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-target="view-search">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 101.414-1.414l-4.344-4.344a9.157 9.157 0 002.077-5.816c0-5.14-4.226-9.28-9.407-9.28zm-7.407 9.279c0-4.006 3.302-7.28 7.407-7.28s7.407 3.274 7.407 7.28-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.28z"/></svg>
+      <span>Cari</span>
+    </button>
+    <button class="nav-item" data-target="view-library">
+      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 22a1 1 0 01-1-1V3a1 1 0 012 0v18a1 1 0 01-1 1zM15.5 2.134A1 1 0 0014 3v18a1 1 0 001 1h6a1 1 0 001-1V6.464a1 1 0 00-.5-.866l-6-3.464zM9 2a1 1 0 00-1 1v18a1 1 0 102 0V3a1 1 0 00-1-1z"/></svg>
+      <span>Koleksi Kamu</span>
+    </button>
+  </nav>
+
+  <!-- ==================== FULL-SCREEN NOW PLAYING ==================== -->
+  <div id="full-player" class="sp-full-player">
+    <!-- Top Bar -->
+    <div class="fp-top-bar">
+      <button id="close-full-player" class="sp-glyph-btn" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path fill="currentColor" d="M4.293 8.293a1 1 0 011.414 0L12 14.586l6.293-6.293a1 1 0 111.414 1.414L12 17.414 4.293 9.707a1 1 0 010-1.414z"/></svg>
+      </button>
+      <div class="fp-header-center">
+        <span class="fp-sub">MEMUTAR DARI KOLEKSI</span>
+        <strong id="fp-context-name">Personal Mix</strong>
+      </div>
+      <span id="stream-badge" class="sp-stream-pill">FULL</span>
+    </div>
+
+    <!-- Album Artwork -->
+    <div class="fp-cover-box">
+      <img id="fp-cover" src="" alt="Album Cover">
+    </div>
+
+    <!-- Track Title, Artist & Save Button -->
+    <div class="fp-track-header">
+      <div class="fp-track-info">
+        <h2 id="fp-title">Judul Lagu</h2>
+        <p id="fp-artist">Nama Artis</p>
+      </div>
+      <button id="fp-like-btn" class="sp-like-circle" aria-label="Simpan">♡</button>
+    </div>
+
+    <!-- Scrubber Progress Bar -->
+    <div class="fp-scrubber">
+      <input type="range" id="seek-slider" min="0" max="100" value="0">
+      <div class="fp-timestamps">
+        <span id="current-time">0:00</span>
+        <span id="total-duration">0:00</span>
+      </div>
+    </div>
+
+    <!-- 5-Button Spotify Transport Controls -->
+    <div class="fp-transport">
+      <button id="btn-shuffle" class="sp-ctrl-sub" aria-label="Acak">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M13.151.922a.75.75 0 10-1.06 1.06L13.109 3H11.16a3.75 3.75 0 00-2.873 1.34l-6.173 7.356A2.25 2.25 0 01.39 12.5H0V14h.391a3.75 3.75 0 002.873-1.34l6.173-7.356a2.25 2.25 0 011.724-.804h1.947l-1.017 1.018a.75.75 0 001.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 00.39 3.5z"/><path fill="currentColor" d="M7.5 10.723l.98-1.167.957 1.14a2.25 2.25 0 001.724.804h1.947l-1.017-1.018a.75.75 0 111.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 11-1.06-1.06L13.109 13H11.16a3.75 3.75 0 01-2.873-1.34l-.787-.937z"/></svg>
+        <span class="active-dot"></span>
+      </button>
+
+      <button id="btn-prev" class="sp-ctrl-main" aria-label="Sebelumnya">
+        <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M3.3 1a.7.7 0 01.7.7v5.15l9.95-5.744a.7.7 0 011.05.606v12.575a.7.7 0 01-1.05.607L4 9.149V14.3a.7.7 0 01-.7.7H1.7a.7.7 0 01-.7-.7V1.7a.7.7 0 01.7-.7h1.6z" transform="translate(4,4)"/></svg>
+      </button>
+
+      <button id="btn-play-pause" class="sp-play-circle" aria-label="Play/Pause">▶</button>
+
+      <button id="btn-next" class="sp-ctrl-main" aria-label="Berikutnya">
+        <svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M12.7 1a.7.7 0 00-.7.7v5.15L2.05 1.107A.7.7 0 001 1.712v12.575a.7.7 0 001.05.607L12 9.149V14.3a.7.7 0 00.7.7h1.6a.7.7 0 00.7-.7V1.7a.7.7 0 00-.7-.7h-1.6z" transform="translate(4,4)"/></svg>
+      </button>
+
+      <button id="btn-repeat" class="sp-ctrl-sub" aria-label="Ulangi">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M0 4.75A3.75 3.75 0 013.75 1h8.5A3.75 3.75 0 0116 4.75v5a3.75 3.75 0 01-3.75 3.75H9.81l1.018 1.018a.75.75 0 11-1.06 1.06L6.939 12.75l2.829-2.828a.75.75 0 111.06 1.06L9.811 12h2.439a2.25 2.25 0 002.25-2.25v-5a2.25 2.25 0 00-2.25-2.25h-8.5A2.25 2.25 0 001.5 4.75v5A2.25 2.25 0 003.75 12H5v1.5H3.75A3.75 3.75 0 010 9.75v-5z" transform="translate(4,4)"/></svg>
+        <span class="active-dot"></span>
+      </button>
+    </div>
+
+    <!-- Synced Lyrics Card (Spotify Bottom Card) -->
+    <div class="sp-lyrics-card">
+      <div class="lyrics-card-top">
+        <span>Lirik</span>
+        <span id="lyrics-status" class="lyrics-badge">SINKRON</span>
+      </div>
+      <div id="lyrics-container" class="lyrics-scroll">
+        <p class="lyric-line active">Pilih lagu untuk memuat lirik...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- HIDDEN AUDIO ENGINE -->
+  <audio id="audio-engine" preload="auto"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
