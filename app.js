@@ -16,6 +16,7 @@ var state = {
   currentTrack: null,
   currentContext: "Late Night Mix",
   likedTracks: JSON.parse(localStorage.getItem("spotizee_liked") || "[]"),
+  recentlyPlayed: JSON.parse(localStorage.getItem("qualyst_recently_played") || "[]"),
   ytCache: JSON.parse(localStorage.getItem("spotizee_yt_cache") || "{}"),
   ytApiKey: localStorage.getItem("spotizee_yt_key") || "",
   lyrics: [],
@@ -39,7 +40,10 @@ document.addEventListener("DOMContentLoaded", function() {
   setupNavigation();
   setupPlayerControls();
   renderLibrary();
+  renderRecentPlayedGrid();
   loadHomeTracks("Bleachers The Cure", "Late Night Mix");
+  loadAdditionalHomeShelves();
+  loadTrendingMusic();
 });
 
 function injectHiddenYouTubeContainer() {
@@ -63,50 +67,72 @@ function injectHiddenYouTubeContainer() {
   document.body.appendChild(tag);
 }
 
-/* Panel API Key di Tab Koleksi Kamu */
+/* Panel API Key pada tab YouTube API */
 function injectApiKeyPanel() {
-  var libView = document.getElementById("view-library");
-  var pinnedRow = document.getElementById("pinned-liked-row");
+  var host = document.getElementById("api-settings-host");
+  if (!host) return;
 
   var box = document.createElement("div");
   box.id = "api-settings-card";
-  box.style.background = "#16294A";
-  box.style.borderRadius = "8px";
-  box.style.padding = "12px";
-  box.style.marginBottom = "16px";
+  box.className = "api-settings-card";
 
-  var statusText = state.ytApiKey ? "Aktif (Full Audio Siap)" : "Belum diisi (Mode preview 30s)";
-  var statusColor = state.ytApiKey ? "#8FB4E3" : "#8793A8";
+  var statusText = state.ytApiKey ? "API Key tersimpan di perangkat ini" : "Belum ada API Key";
+  var statusColor = state.ytApiKey ? "#9CCBFF" : "#8793A8";
 
   box.innerHTML =
-    '<div style="font-size:12.5px;font-weight:700;margin-bottom:3px;color:#EEF1F6;">YouTube API Key (Full Song)</div>' +
-    '<div id="yt-key-status" style="font-size:11px;color:' + statusColor + ';margin-bottom:8px;">Status: ' + statusText + '</div>' +
-    '<div style="display:flex;gap:8px;">' +
-      '<input type="password" id="yt-key-input" placeholder="Tempel AIzaSy... di sini" value="' + escapeHtml(state.ytApiKey) + '" style="flex:1;background:#0C1B33;border:1px solid rgba(143,180,227,0.25);border-radius:6px;padding:8px 10px;color:#EEF1F6;font-size:12px;outline:none;">' +
-      '<button id="save-yt-key" style="background:#8FB4E3;color:#0C1B33;border:none;border-radius:6px;padding:0 14px;font-size:12px;font-weight:700;cursor:pointer;">Simpan</button>' +
+    '<div class="api-card-heading">YouTube Data API v3</div>' +
+    '<div id="yt-key-status" class="api-key-status" style="color:' + statusColor + ';">' + statusText + '</div>' +
+    '<label class="api-input-label" for="yt-key-input">API Key</label>' +
+    '<div class="api-input-row">' +
+      '<input type="password" id="yt-key-input" placeholder="Masukkan API Key milikmu" value="' + escapeHtml(state.ytApiKey) + '" autocomplete="off" spellcheck="false">' +
+      '<button type="button" id="toggle-yt-key" class="api-secondary-btn" aria-label="Tampilkan API Key">Lihat</button>' +
+    '</div>' +
+    '<div class="api-action-row">' +
+      '<button type="button" id="save-yt-key" class="api-primary-btn">Simpan API Key</button>' +
+      '<button type="button" id="clear-yt-key" class="api-secondary-btn">Hapus</button>' +
     '</div>';
 
-  libView.insertBefore(box, pinnedRow);
+  host.appendChild(box);
 
-  document.getElementById("toggle-api-box").addEventListener("click", function() {
-    box.classList.toggle("hidden");
+  document.getElementById("toggle-yt-key").addEventListener("click", function() {
+    var input = document.getElementById("yt-key-input");
+    var visible = input.type === "text";
+    input.type = visible ? "password" : "text";
+    this.textContent = visible ? "Lihat" : "Sembunyi";
+    this.setAttribute("aria-label", visible ? "Tampilkan API Key" : "Sembunyikan API Key");
   });
 
   document.getElementById("save-yt-key").addEventListener("click", function() {
     var val = document.getElementById("yt-key-input").value.trim();
     state.ytApiKey = val;
     localStorage.setItem("spotizee_yt_key", val);
-    var stEl = document.getElementById("yt-key-status");
-    if (val) {
-      stEl.textContent = "Status: Aktif (Full Audio Siap)";
-      stEl.style.color = "#8FB4E3";
-      showToast("API Key tersimpan!");
-    } else {
-      stEl.textContent = "Status: Belum diisi (Mode preview 30s)";
-      stEl.style.color = "#8793A8";
-      showToast("API Key dihapus");
-    }
+    updateApiKeyStatus();
+    loadTrendingMusic();
+    showToast(val ? "API Key tersimpan di perangkat ini" : "API Key dihapus");
   });
+
+  document.getElementById("clear-yt-key").addEventListener("click", function() {
+    state.ytApiKey = "";
+    localStorage.removeItem("spotizee_yt_key");
+    document.getElementById("yt-key-input").value = "";
+    document.getElementById("yt-key-input").type = "password";
+    document.getElementById("toggle-yt-key").textContent = "Lihat";
+    updateApiKeyStatus();
+    loadTrendingMusic();
+    showToast("API Key dihapus");
+  });
+}
+
+function updateApiKeyStatus() {
+  var status = document.getElementById("yt-key-status");
+  if (!status) return;
+  if (state.ytApiKey) {
+    status.textContent = "API Key tersimpan di perangkat ini";
+    status.style.color = "#9CCBFF";
+  } else {
+    status.textContent = "Belum ada API Key";
+    status.style.color = "#8793A8";
+  }
 }
 
 window.onYouTubeIframeAPIReady = function() {
@@ -132,6 +158,7 @@ window.onYouTubeIframeAPIReady = function() {
 function onYtStateChange(event) {
   if (event.data === 1) {
     state.playerMode = "youtube";
+    rememberRecentlyPlayed(state.currentTrack);
     document.getElementById("mini-play-btn").textContent = "❚❚";
     document.getElementById("btn-play-pause").textContent = "❚❚";
     document.getElementById("stream-badge").textContent = "FULL AUDIO";
@@ -249,60 +276,177 @@ function fetchCatalog(query, callback) {
     });
 }
 
+function renderHorizontalShelf(tracks, container, contextLabel) {
+  if (!container) return;
+  container.innerHTML = "";
+  if (!tracks || !tracks.length) {
+    container.innerHTML = '<div class="loader-text">Belum ada rekomendasi untuk ditampilkan.</div>';
+    return;
+  }
+
+  for (var i = 0; i < tracks.length; i++) {
+    (function(index, track) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "shelf-card";
+      card.setAttribute("aria-label", "Putar " + track.title + " oleh " + track.artist);
+      card.innerHTML =
+        '<span class="shelf-art-wrap"><img src="' + escapeHtml(track.cover || "") + '" alt="" loading="lazy"></span>' +
+        '<span class="shelf-title">' + escapeHtml(track.title) + '</span>' +
+        '<span class="shelf-sub">' + escapeHtml(track.artist) + '</span>';
+      card.addEventListener("click", function() {
+        state.queue = tracks;
+        state.currentContext = contextLabel || "Rekomendasi";
+        playTrackAtIndex(index);
+      });
+      container.appendChild(card);
+    })(i, tracks[i]);
+  }
+}
+
+
+/* Riwayat enam lagu terakhir, unik berdasarkan ID dan tersimpan per browser. */
+function renderRecentPlayedGrid() {
+  var gridEl = document.getElementById("quick-grid");
+  if (!gridEl) return;
+
+  gridEl.innerHTML = "";
+  var recent = state.recentlyPlayed.slice(0, 6);
+  if (!recent.length) {
+    gridEl.innerHTML = '<div class="recent-empty">Lagu yang baru kamu putar akan muncul di sini.</div>';
+    return;
+  }
+
+  for (var i = 0; i < recent.length; i++) {
+    (function(index, track) {
+      var card = document.createElement("button");
+      card.type = "button";
+      card.className = "sp-quick-item";
+      card.setAttribute("aria-label", "Putar kembali " + track.title + " oleh " + track.artist);
+      card.innerHTML = '<img src="' + escapeHtml(track.cover || "") + '" alt="" loading="lazy"><span>' + escapeHtml(track.title || "Tanpa judul") + '</span>';
+      card.addEventListener("click", function() {
+        state.queue = recent.slice();
+        state.currentContext = "Baru Diputar";
+        playTrackAtIndex(index);
+      });
+      gridEl.appendChild(card);
+    })(i, recent[i]);
+  }
+}
+
+function rememberRecentlyPlayed(track) {
+  if (!track) return;
+  var normalized = {
+    id: String(track.id || track.youtubeVideoId || (track.title + "-" + track.artist)),
+    title: track.title || "Tanpa judul",
+    artist: track.artist || "Artis tidak diketahui",
+    album: track.album || "",
+    cover: track.cover || "",
+    duration: track.duration || 0,
+    previewUrl: track.previewUrl || "",
+    youtubeVideoId: track.youtubeVideoId || ""
+  };
+
+  state.recentlyPlayed = state.recentlyPlayed.filter(function(item) {
+    return String(item.id) !== normalized.id;
+  });
+  state.recentlyPlayed.unshift(normalized);
+  state.recentlyPlayed = state.recentlyPlayed.slice(0, 6);
+
+  try {
+    localStorage.setItem("qualyst_recently_played", JSON.stringify(state.recentlyPlayed));
+  } catch (error) {
+    console.warn("Riwayat pemutaran tidak dapat disimpan.", error);
+  }
+  renderRecentPlayedGrid();
+}
+
 function loadHomeTracks(query, contextLabel) {
-  var listEl = document.getElementById("home-track-list");
   var gridEl = document.getElementById("quick-grid");
   var shelfEl = document.getElementById("home-shelf");
+  var recommendationEl = document.getElementById("home-track-list");
   state.currentContext = contextLabel || "Personal Mix";
 
-  listEl.innerHTML = '<div class="loader-text">Memuat lagu...</div>';
+  if (recommendationEl) recommendationEl.innerHTML = '<div class="loader-text">Memuat rekomendasi...</div>';
 
   fetchCatalog(query, function(tracks) {
     if (tracks.length === 0) {
-      listEl.innerHTML = '<div class="loader-text">Gagal memuat katalog. Periksa koneksi internet.</div>';
+      if (recommendationEl) recommendationEl.innerHTML = '<div class="loader-text">Gagal memuat katalog. Periksa koneksi internet.</div>';
       return;
     }
 
-    /* 1. Isi Spotify 2x4 Compact Grid (8 Kartu Pertama) */
-    gridEl.innerHTML = "";
-    var topEight = tracks.slice(0, 8);
-    for (var i = 0; i < topEight.length; i++) {
-      (function(index, track) {
-        var card = document.createElement("div");
-        card.className = "sp-quick-item";
-        card.innerHTML =
-          '<img src="' + track.cover + '" alt="">' +
-          '<span>' + escapeHtml(track.title) + '</span>';
-        card.addEventListener("click", function() {
-          state.queue = tracks;
-          playTrackAtIndex(index);
-        });
-        gridEl.appendChild(card);
-      })(i, topEight[i]);
-    }
+    /* Grid di bagian atas hanya menampilkan riwayat lagu yang benar-benar dipilih untuk diputar. */
+    renderRecentPlayedGrid();
 
-    /* 2. Isi Rak Horizontal (Item 4 sampai 12) */
-    shelfEl.innerHTML = "";
-    var shelfTracks = tracks.slice(4, 12);
-    for (var s = 0; s < shelfTracks.length; s++) {
-      (function(offsetIdx, track) {
-        var sCard = document.createElement("div");
-        sCard.className = "shelf-card";
-        sCard.innerHTML =
-          '<img src="' + track.cover + '" alt="">' +
-          '<div class="shelf-title">' + escapeHtml(track.title) + '</div>' +
-          '<div class="shelf-sub">' + escapeHtml(track.artist) + '</div>';
-        sCard.addEventListener("click", function() {
-          state.queue = tracks;
-          playTrackAtIndex(offsetIdx);
-        });
-        shelfEl.appendChild(sCard);
-      })(s + 4, shelfTracks[s]);
-    }
-
-    /* 3. Isi Daftar Lagu Vertikal */
-    renderTrackList(tracks, listEl);
+    /* Pilihan Malam Ini dan Rekomendasi memakai pola album horizontal. */
+    renderHorizontalShelf(tracks.slice(4, 12), shelfEl, "Pilihan Malam Ini");
+    renderHorizontalShelf(tracks.slice(0, 16), recommendationEl, "Rekomendasi Untukmu");
   });
+}
+
+function loadAdditionalHomeShelves() {
+  var shelves = [
+    { query: "indie alternative rock songs", id: "indie-shelf", context: "Indie & Alternative" },
+    { query: "lagu pop indonesia hits", id: "indo-shelf", context: "Pop Indonesia" }
+  ];
+  for (var i = 0; i < shelves.length; i++) {
+    (function(item) {
+      fetchCatalog(item.query, function(tracks) {
+        renderHorizontalShelf(tracks.slice(0, 16), document.getElementById(item.id), item.context);
+      });
+    })(shelves[i]);
+  }
+}
+
+function parseYouTubeDuration(value) {
+  var match = String(value || "").match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  return (Number(match[1] || 0) * 3600) + (Number(match[2] || 0) * 60) + Number(match[3] || 0);
+}
+
+function loadTrendingMusic() {
+  var shelf = document.getElementById("viral-music-shelf");
+  if (!shelf) return;
+  if (!state.ytApiKey) {
+    shelf.innerHTML = '<div class="shelf-empty">Masukkan API Key di tab YouTube API untuk memuat chart musik populer Indonesia.</div>';
+    return;
+  }
+
+  shelf.innerHTML = '<div class="loader-text">Memuat musik populer Indonesia...</div>';
+  var url = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&chart=mostPopular&regionCode=ID&videoCategoryId=10&maxResults=18&key=" + encodeURIComponent(state.ytApiKey);
+  fetch(url)
+    .then(function(res) {
+      if (!res.ok) throw new Error("YouTube API request failed");
+      return res.json();
+    })
+    .then(function(data) {
+      var tracks = [];
+      if (data && Array.isArray(data.items)) {
+        for (var i = 0; i < data.items.length; i++) {
+          var item = data.items[i];
+          if (!item.id || !item.snippet) continue;
+          var thumbs = item.snippet.thumbnails || {};
+          tracks.push({
+            id: "yt-trending-" + item.id,
+            youtubeVideoId: item.id,
+            title: item.snippet.title || "Video musik",
+            artist: item.snippet.channelTitle || "YouTube Music",
+            album: "YouTube Music Chart Indonesia",
+            cover: (thumbs.maxres && thumbs.maxres.url) || (thumbs.high && thumbs.high.url) || (thumbs.medium && thumbs.medium.url) || "",
+            duration: parseYouTubeDuration(item.contentDetails && item.contentDetails.duration),
+            previewUrl: ""
+          });
+        }
+      }
+      if (!tracks.length) {
+        shelf.innerHTML = '<div class="shelf-empty">Chart musik belum tersedia untuk API Key atau wilayah ini.</div>';
+        return;
+      }
+      renderHorizontalShelf(tracks, shelf, "Sedang Viral · YouTube Indonesia");
+    })
+    .catch(function() {
+      shelf.innerHTML = '<div class="shelf-empty">Chart tidak dapat dimuat. Periksa API Key, batas kuota, dan izin YouTube Data API v3.</div>';
+    });
 }
 
 function performSearch(query) {
@@ -361,9 +505,14 @@ function playTrackAtIndex(index) {
   setupLockscreenMedia(track);
 
   /* Perbarui highlight lagu yang aktif di daftar */
-  var homeList = document.getElementById("home-track-list");
-  if (homeList && document.getElementById("view-home").classList.contains("active")) {
-    renderTrackList(state.queue, homeList);
+  if (track.youtubeVideoId) {
+    if (ytReady && ytPlayer && typeof ytPlayer.loadVideoById === "function") {
+      state.playerMode = "youtube";
+      ytPlayer.loadVideoById(track.youtubeVideoId);
+    } else {
+      searchOfficialYouTubeApi(track.artist + " - " + track.title, track);
+    }
+    return;
   }
 
   if (state.ytCache[track.id] && ytReady) {
@@ -618,6 +767,7 @@ function setupPlayerControls() {
   });
 
   audio.addEventListener("play", function() {
+    rememberRecentlyPlayed(state.currentTrack);
     document.getElementById("mini-play-btn").textContent = "❚❚";
     document.getElementById("btn-play-pause").textContent = "❚❚";
   });
