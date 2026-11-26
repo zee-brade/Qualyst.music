@@ -17,6 +17,7 @@ var state = {
   currentContext: "Late Night Mix",
   likedTracks: JSON.parse(localStorage.getItem("spotizee_liked") || "[]"),
   recentlyPlayed: JSON.parse(localStorage.getItem("qualyst_recently_played") || "[]"),
+  defaultQuickTracks: [],
   ytCache: JSON.parse(localStorage.getItem("spotizee_yt_cache") || "{}"),
   ytApiKey: localStorage.getItem("spotizee_yt_key") || "",
   lyrics: [],
@@ -305,32 +306,58 @@ function renderHorizontalShelf(tracks, container, contextLabel) {
 }
 
 
-/* Riwayat enam lagu terakhir, unik berdasarkan ID dan tersimpan per browser. */
+/* Grid enam kartu: riwayat pemutaran mengisi bagian depan, katalog default melengkapi sisanya. */
 function renderRecentPlayedGrid() {
   var gridEl = document.getElementById("quick-grid");
   if (!gridEl) return;
 
   gridEl.innerHTML = "";
+
+  var visibleTracks = [];
+  var seenIds = {};
+
+  /* Lagu yang benar-benar sudah diputar selalu berada di urutan teratas. */
   var recent = state.recentlyPlayed.slice(0, 6);
-  if (!recent.length) {
-    gridEl.innerHTML = '<div class="recent-empty">Lagu yang baru kamu putar akan muncul di sini.</div>';
+  for (var r = 0; r < recent.length && visibleTracks.length < 6; r++) {
+    var recentId = String(recent[r].id || "");
+    if (!seenIds[recentId]) {
+      visibleTracks.push(recent[r]);
+      seenIds[recentId] = true;
+    }
+  }
+
+  /* Pertahankan kartu default yang belum tergantikan oleh riwayat pemutaran. */
+  var defaults = state.defaultQuickTracks || [];
+  for (var d = 0; d < defaults.length && visibleTracks.length < 6; d++) {
+    var defaultId = String(defaults[d].id || defaults[d].youtubeVideoId || "");
+    if (!seenIds[defaultId]) {
+      visibleTracks.push(defaults[d]);
+      seenIds[defaultId] = true;
+    }
+  }
+
+  if (!visibleTracks.length) {
+    gridEl.innerHTML =
+      '<div class="recent-empty">Memuat pilihan lagu...</div>';
     return;
   }
 
-  for (var i = 0; i < recent.length; i++) {
-    (function(index, track) {
+  for (var i = 0; i < visibleTracks.length; i++) {
+    (function(index, track, tracksForGrid) {
       var card = document.createElement("button");
       card.type = "button";
       card.className = "sp-quick-item";
-      card.setAttribute("aria-label", "Putar kembali " + track.title + " oleh " + track.artist);
-      card.innerHTML = '<img src="' + escapeHtml(track.cover || "") + '" alt="" loading="lazy"><span>' + escapeHtml(track.title || "Tanpa judul") + '</span>';
+      card.setAttribute("aria-label", "Putar " + track.title + " oleh " + track.artist);
+      card.innerHTML =
+        '<img src="' + escapeHtml(track.cover || "") + '" alt="" loading="lazy">' +
+        '<span>' + escapeHtml(track.title || "Tanpa judul") + '</span>';
       card.addEventListener("click", function() {
-        state.queue = recent.slice();
+        state.queue = tracksForGrid.slice();
         state.currentContext = "Baru Diputar";
         playTrackAtIndex(index);
       });
       gridEl.appendChild(card);
-    })(i, recent[i]);
+    })(i, visibleTracks[i], visibleTracks);
   }
 }
 
@@ -375,7 +402,8 @@ function loadHomeTracks(query, contextLabel) {
       return;
     }
 
-    /* Grid di bagian atas hanya menampilkan riwayat lagu yang benar-benar dipilih untuk diputar. */
+    /* Isi enam kartu awal dari katalog. Riwayat lagu yang diputar akan menggantikannya satu per satu. */
+    state.defaultQuickTracks = tracks.slice(0, 6);
     renderRecentPlayedGrid();
 
     /* Pilihan Malam Ini dan Rekomendasi memakai pola album horizontal. */
