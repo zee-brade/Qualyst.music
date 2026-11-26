@@ -807,3 +807,722 @@ body {
   z-index: 200;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
+
+
+/* =========================================================
+   TRAZEEL LIQUID GLASS BOTTOM NAV (OVERRIDE)
+========================================================= */
+
+.bottom-nav,
+.bottom-nav *,
+.bottom-nav *::before,
+.bottom-nav *::after {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav {
+    --icon-inactive: rgba(222, 235, 250, 0.58);
+    --icon-active: #9CCBFF;
+    --glass-blur: blur(22px) saturate(180%) brightness(1.08);
+    --glass-surface: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.13) 0%,
+        rgba(22, 20, 18, 0.36) 48%,
+        rgba(255, 255, 255, 0.08) 100%
+    );
+
+    position: fixed !important;
+    z-index: 50 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 96px;
+    min-height: 0 !important;
+    display: block !important;
+    padding: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+body[data-theme="light"] .bottom-nav {
+    --icon-inactive: rgba(222, 235, 250, 0.58);
+    --icon-active: #8a6a35;
+    --glass-blur: blur(22px) saturate(185%) brightness(1.05);
+    --glass-surface: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.62) 0%,
+        rgba(247, 243, 234, 0.30) 48%,
+        rgba(255, 255, 255, 0.52) 100%
+    );
+    background: transparent !important;
+    border: 0 !important;
+}
+
+@media (min-width: 640px) {
+    .bottom-nav {
+        max-width: 540px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+    }
+}
+
+.bottom-nav.is-scrubbing {
+    cursor: grabbing;
+}
+
+.liquid-navbar__defs {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.liquid-navbar__bar-shadow {
+    position: absolute;
+    inset: 0;
+    filter:
+        drop-shadow(0 -6px 24px rgba(0, 0, 0, 0.24))
+        drop-shadow(0 -2px 8px rgba(0, 0, 0, 0.14));
+    pointer-events: none;
+    z-index: 1;
+}
+
+body[data-theme="light"] .liquid-navbar__bar-shadow {
+    filter:
+        drop-shadow(0 -6px 24px rgba(58, 46, 26, 0.10))
+        drop-shadow(0 -2px 8px rgba(58, 46, 26, 0.06));
+}
+
+.liquid-navbar__bar-glass {
+    position: absolute;
+    inset: 0;
+    -webkit-clip-path: url(#liquid-bar-clip);
+    clip-path: url(#liquid-bar-clip);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    background: var(--glass-surface);
+    overflow: hidden;
+}
+
+.liquid-navbar__bar-rim,
+.liquid-navbar__bubble-rim {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
+.liquid-navbar__bubble {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 62px;
+    height: 62px;
+    pointer-events: none;
+    will-change: transform;
+    transform-origin: 31px 31px;
+    filter:
+        drop-shadow(0 8px 20px rgba(0, 0, 0, 0.30))
+        drop-shadow(0 2px 6px rgba(0, 0, 0, 0.16));
+    z-index: 2;
+}
+
+body[data-theme="light"] .liquid-navbar__bubble {
+    filter:
+        drop-shadow(0 8px 18px rgba(58, 46, 26, 0.14))
+        drop-shadow(0 2px 6px rgba(58, 46, 26, 0.07));
+}
+
+.liquid-navbar__bubble-glass {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    background: var(--glass-surface);
+}
+
+.bottom-nav .nav-item,
+.bottom-nav .nav-item.active,
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active:hover {
+    position: absolute !important;
+    top: 0 !important;
+    z-index: 3 !important;
+    width: 60px;
+    height: 96px;
+    margin: 0 0 0 -30px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+    color: var(--icon-inactive) !important;
+    cursor: inherit;
+}
+
+.bottom-nav .nav-item:focus-visible .nav-icon {
+    outline: 2px solid rgba(143, 180, 227, 0.62);
+    outline-offset: 6px;
+    border-radius: 999px;
+}
+
+.bottom-nav .nav-icon,
+.bottom-nav .nav-item.active .nav-icon {
+    position: absolute !important;
+    left: 50% !important;
+    top: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: -12px 0 0 -12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transform-origin: 50% 50% !important;
+    pointer-events: none;
+    transition: none !important;
+}
+
+.bottom-nav .nav-icon svg,
+.bottom-nav .nav-item.active .nav-icon svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.bottom-nav .nav-label {
+    display: none !important;
+}
+
+.toast {
+    bottom: 104px !important;
+}
+
+
+/* =========================================================
+   QUALYST NAV + MINI PLAYER + API SETTINGS
+========================================================= */
+:root {
+  --nav-height: 96px;
+}
+.app-container {
+  padding-bottom: 184px;
+}
+.sp-mini-player {
+  bottom: calc(var(--nav-height) + 8px);
+  z-index: 45;
+  min-height: var(--mini-height);
+  border: 1px solid rgba(156, 203, 255, 0.20);
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(25, 48, 82, 0.97), rgba(13, 29, 53, 0.97));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(255,255,255,0.025) inset;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+.sp-mini-player .mini-left img {
+  border-radius: 8px;
+}
+.sp-mini-player .mini-progress-track {
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(156, 203, 255, 0.16);
+}
+.sp-mini-player .mini-progress-fill {
+  background: #9CCBFF;
+}
+.sp-mini-player .sp-glyph-btn {
+  color: #EAF4FF;
+}
+.sp-mini-player .sp-glyph-btn.liked {
+  color: #9CCBFF;
+}
+.sp-mini-player .play-glyph {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #9CCBFF;
+  color: #0C1B33;
+  font-size: 15px;
+}
+
+/* Recent-played tiles: same neutral liquid-glass material as the navbar. */
+.sp-quick-item {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-top-color: rgba(255, 255, 255, 0.34);
+  border-radius: 13px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(22, 20, 18, 0.36) 48%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(22px) saturate(180%) brightness(1.08);
+  -webkit-backdrop-filter: blur(22px) saturate(180%) brightness(1.08);
+  overflow: hidden;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.sp-quick-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.16),
+    transparent 38%,
+    rgba(255, 255, 255, 0.035) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.sp-quick-item img {
+  position: relative;
+  z-index: 0;
+  border-radius: 0;
+}
+
+.sp-quick-item span {
+  position: relative;
+  z-index: 2;
+}
+
+.sp-quick-item:active {
+  transform: scale(0.975);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.recent-section-header {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.recent-empty {
+  grid-column: 1 / -1;
+  padding: 14px 2px;
+  color: rgba(220, 228, 238, 0.58);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.shelf-card img {
+  border-radius: 11px;
+  border: 1px solid rgba(156, 203, 255, 0.12);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20);
+}
+.track-item img {
+  border-radius: 9px;
+}
+.sp-section-header {
+  margin-top: 4px;
+}
+
+/* Dedicated YouTube API page */
+.api-intro {
+  max-width: 520px;
+  margin: 4px 0 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.api-settings-card {
+  padding: 18px;
+  border: 1px solid rgba(143, 180, 227, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #172F52, #10223E);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+}
+.api-card-heading {
+  color: var(--text-main);
+  font-size: 15px;
+  font-weight: 750;
+}
+.api-key-status {
+  margin-top: 6px;
+  margin-bottom: 22px;
+  font-size: 11px;
+}
+.api-input-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #C5D8EF;
+  font-size: 11px;
+  font-weight: 700;
+}
+.api-input-row {
+  display: flex;
+  gap: 8px;
+}
+.api-input-row input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid rgba(143, 180, 227, 0.24);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(5, 17, 34, 0.72);
+  color: #EEF5FF;
+  font-size: 12px;
+}
+.api-input-row input:focus {
+  border-color: rgba(156, 203, 255, 0.72);
+  box-shadow: 0 0 0 3px rgba(143, 180, 227, 0.10);
+}
+.api-input-row input::placeholder {
+  color: #7186A3;
+}
+.api-action-row {
+  display: flex;
+  gap: 9px;
+  margin-top: 12px;
+}
+.api-primary-btn,
+.api-secondary-btn {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.api-primary-btn {
+  flex: 1;
+  border: 1px solid #9CCBFF;
+  background: #9CCBFF;
+  color: #0C1B33;
+}
+.api-secondary-btn {
+  border: 1px solid rgba(156, 203, 255, 0.22);
+  background: rgba(255,255,255,0.045);
+  color: #DCEBFC;
+}
+.api-note {
+  margin-top: 14px;
+  padding: 14px 15px;
+  border: 1px solid rgba(143, 180, 227, 0.12);
+  border-radius: 13px;
+  background: rgba(143, 180, 227, 0.055);
+}
+.api-note strong {
+  color: #C5D8EF;
+  font-size: 11px;
+}
+.api-note p {
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+@media (max-width: 380px) {
+  .api-settings-card { padding: 14px; }
+  .api-action-row { flex-wrap: wrap; }
+  .api-primary-btn { flex-basis: 100%; }
+}
+
+.toast { bottom: 172px !important; }
+
+/* =========================================================
+   QUALYST VISUAL REFINEMENT
+   Black canvas, matte-glass mini player, liquid album frame,
+   and horizontal discovery shelves.
+========================================================= */
+:root {
+  --bg-main: #000000;
+}
+
+body {
+  background: #000000;
+}
+
+.sp-home-header {
+  background: rgba(0, 0, 0, 0.92);
+}
+
+.sp-full-player {
+  background: #000000;
+}
+
+/* Mini-player: neutral, thin matte glass. No navy/blue color wash. */
+.sp-mini-player {
+  isolation: isolate;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-top-color: rgba(255, 255, 255, 0.34);
+  border-bottom-color: rgba(255, 255, 255, 0.10);
+  border-radius: 17px;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(19px) saturate(145%) brightness(1.08);
+  -webkit-backdrop-filter: blur(19px) saturate(145%) brightness(1.08);
+}
+
+.sp-mini-player::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.105) 0%,
+    rgba(255, 255, 255, 0.025) 34%,
+    transparent 68%,
+    rgba(255, 255, 255, 0.035) 100%
+  );
+}
+
+.sp-mini-player .mini-left img {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.30);
+}
+
+.sp-mini-player .mini-progress-track {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.sp-mini-player .mini-progress-fill {
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 0 7px rgba(255, 255, 255, 0.20);
+}
+
+.sp-mini-player .sp-glyph-btn {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.sp-mini-player .sp-glyph-btn.liked {
+  color: #FFFFFF;
+}
+
+.sp-mini-player .play-glyph {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 15px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* Full Player cover: liquid-glass rim inspired by Trazeel's navbar. */
+.fp-cover-box {
+  position: relative;
+  isolation: isolate;
+  padding: 7px;
+  border: 1px solid rgba(225, 241, 255, 0.30);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.20), rgba(122, 177, 230, 0.055) 42%, rgba(255, 255, 255, 0.10));
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.62),
+    0 0 0 1px rgba(156, 203, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -2px 5px rgba(4, 13, 25, 0.44);
+  overflow: hidden;
+}
+
+.fp-cover-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.055) 18%, transparent 43%),
+    linear-gradient(330deg, rgba(143, 199, 255, 0.18), transparent 34%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.46), inset 0 -1px 1px rgba(156, 203, 255, 0.24);
+}
+
+.fp-cover-box::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 21px;
+  pointer-events: none;
+}
+
+.fp-cover-box img {
+  position: relative;
+  z-index: 0;
+  display: block;
+  border-radius: 21px;
+}
+
+/* All home discovery shelves use the same large horizontal album cards. */
+.sp-horizontal-shelf {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 1px 12px;
+  margin: 0 -1px 25px;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sp-horizontal-shelf::-webkit-scrollbar {
+  display: none;
+}
+
+.shelf-card {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: clamp(142px, 42vw, 172px);
+  min-width: clamp(142px, 42vw, 172px);
+  flex: 0 0 clamp(142px, 42vw, 172px);
+  padding: 0;
+  border: 0;
+  border-radius: 15px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.shelf-art-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 9px;
+  padding: 4px;
+  border: 1px solid rgba(211, 232, 255, 0.20);
+  border-radius: 19px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(91,145,204,0.06) 48%, rgba(255,255,255,0.10));
+  box-shadow: 0 9px 24px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.24);
+  overflow: hidden;
+}
+
+.shelf-art-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 15px;
+  pointer-events: none;
+}
+
+.shelf-art-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 15px;
+  object-fit: cover;
+  background: #111;
+}
+
+.shelf-title,
+.shelf-sub {
+  display: block;
+  width: 100%;
+  padding: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shelf-title {
+  color: #F1F5FA;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 680;
+}
+
+.shelf-sub {
+  margin-top: 3px;
+  color: rgba(201, 215, 232, 0.62);
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.shelf-card:active .shelf-art-wrap {
+  transform: scale(0.975);
+}
+
+.shelf-art-wrap {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.section-subtitle {
+  margin-top: 4px;
+  color: rgba(190, 207, 228, 0.56);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.sp-section-header {
+  margin-top: 7px;
+  margin-bottom: 11px;
+}
+
+.home-recommendations .loader-text,
+.sp-horizontal-shelf .loader-text,
+.shelf-empty {
+  align-self: center;
+  min-width: 100%;
+  padding: 14px 2px;
+  color: rgba(190, 207, 228, 0.58);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (min-width: 600px) {
+  .shelf-card {
+    width: 172px;
+    min-width: 172px;
+    flex-basis: 172px;
+  }
+}
