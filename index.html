@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0C1B33">
-  <title>SpotiZee</title>
+  <title>Qualyst Music</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,8 +25,11 @@
         </div>
       </header>
 
-      <!-- Spotify 2x4 Compact Horizontal Grid (8 Kartu) -->
-      <div class="sp-quick-grid" id="quick-grid"></div>
+      <!-- Enam lagu terakhir yang diputar -->
+      <div class="sp-section-header recent-section-header">
+        <h2 class="section-title">Baru Diputar</h2>
+      </div>
+      <div class="sp-quick-grid" id="quick-grid" aria-label="Enam lagu terakhir yang diputar"></div>
 
       <!-- Rak Horizontal Khas Spotify -->
       <div class="sp-section-header">
@@ -34,12 +37,39 @@
       </div>
       <div class="sp-horizontal-shelf" id="home-shelf"></div>
 
-      <!-- Daftar Lagu Vertikal -->
+      <!-- Rak Rekomendasi Horizontal -->
       <div class="sp-section-header">
         <h2 class="section-title">Rekomendasi Untukmu</h2>
+        <p class="section-subtitle">Pilihan yang mungkin cocok dengan seleramu</p>
       </div>
-      <div class="track-list" id="home-track-list">
+      <div class="sp-horizontal-shelf home-recommendations" id="home-track-list">
         <div class="loader-text">Memuat katalog musik...</div>
+      </div>
+
+      <!-- Chart musik populer YouTube Indonesia -->
+      <div class="sp-section-header">
+        <h2 class="section-title">Sedang Viral</h2>
+        <p class="section-subtitle">Video musik populer di YouTube Indonesia</p>
+      </div>
+      <div class="sp-horizontal-shelf" id="viral-music-shelf">
+        <div class="loader-text">Hubungkan YouTube API untuk melihat musik populer.</div>
+      </div>
+
+      <!-- Rak tambahan -->
+      <div class="sp-section-header">
+        <h2 class="section-title">Indie & Alternative</h2>
+        <p class="section-subtitle">Suara alternatif untuk menemani harimu</p>
+      </div>
+      <div class="sp-horizontal-shelf" id="indie-shelf">
+        <div class="loader-text">Memuat rekomendasi...</div>
+      </div>
+
+      <div class="sp-section-header">
+        <h2 class="section-title">Pop Indonesia</h2>
+        <p class="section-subtitle">Pilihan musik dari Indonesia</p>
+      </div>
+      <div class="sp-horizontal-shelf" id="indo-shelf">
+        <div class="loader-text">Memuat rekomendasi...</div>
       </div>
     </section>
 
@@ -100,7 +130,6 @@
           <div class="avatar-badge">Z</div>
           <h1>Koleksi Kamu</h1>
         </div>
-        <button id="toggle-api-box" class="sp-icon-circle" title="Pengaturan API Key">⚙</button>
       </header>
 
       <div class="header-pills" style="margin-bottom:14px;">
@@ -118,6 +147,22 @@
       </div>
 
       <div class="track-list" id="library-track-list"></div>
+    </section>
+
+    <!-- ==================== TAB 4: YOUTUBE API ==================== -->
+    <section id="view-api" class="tab-view">
+      <header class="sp-page-header">
+        <div class="sp-header-left">
+          <div class="avatar-badge">Q</div>
+          <h1>YouTube API</h1>
+        </div>
+      </header>
+      <p class="api-intro">Hubungkan YouTube Data API menggunakan API Key milikmu sendiri. Key ini disimpan di browser perangkat ini.</p>
+      <div id="api-settings-host"></div>
+      <div class="api-note">
+        <strong>Catatan keamanan</strong>
+        <p>Batasi API Key melalui Google Cloud Console dengan HTTP referrer situs dan YouTube Data API v3. Jangan bagikan API Key ke orang lain.</p>
+      </div>
     </section>
 
   </main>
@@ -140,19 +185,23 @@
     </div>
   </div>
 
-  <!-- ==================== SPOTIFY BOTTOM NAVBAR ==================== -->
-  <nav class="sp-bottom-nav">
-    <button class="nav-item active" data-target="view-home">
-      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 1.515a3 3 0 00-3 0L3 5.845a2 2 0 00-1 1.732V21a1 1 0 001 1h6a1 1 0 001-1v-6h4v6a1 1 0 001 1h6a1 1 0 001-1V7.577a2 2 0 00-1-1.732l-7.5-4.33z"/></svg>
-      <span>Home</span>
+  <!-- ==================== QUALYST LIQUID GLASS NAVBAR ==================== -->
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <button class="nav-item active" data-target="view-home" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      <span class="nav-label">Home</span>
     </button>
-    <button class="nav-item" data-target="view-search">
-      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 101.414-1.414l-4.344-4.344a9.157 9.157 0 002.077-5.816c0-5.14-4.226-9.28-9.407-9.28zm-7.407 9.279c0-4.006 3.302-7.28 7.407-7.28s7.407 3.274 7.407 7.28-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.28z"/></svg>
-      <span>Cari</span>
+    <button class="nav-item" data-target="view-search" type="button" aria-label="Cari">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.1"/><path d="m16 16 5 5"/></svg>
+      <span class="nav-label">Cari</span>
     </button>
-    <button class="nav-item" data-target="view-library">
-      <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 22a1 1 0 01-1-1V3a1 1 0 012 0v18a1 1 0 01-1 1zM15.5 2.134A1 1 0 0014 3v18a1 1 0 001 1h6a1 1 0 001-1V6.464a1 1 0 00-.5-.866l-6-3.464zM9 2a1 1 0 00-1 1v18a1 1 0 102 0V3a1 1 0 00-1-1z"/></svg>
-      <span>Koleksi Kamu</span>
+    <button class="nav-item" data-target="view-library" type="button" aria-label="Koleksi">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v18M9 3v18M14 4v16a1 1 0 0 0 1.5.86l5-3a1 1 0 0 0 .5-.86V7a1 1 0 0 0-.5-.86l-5-3A1 1 0 0 0 14 4z"/></svg>
+      <span class="nav-label">Koleksi</span>
+    </button>
+    <button class="nav-item" data-target="view-api" type="button" aria-label="YouTube API">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>
+      <span class="nav-label">YouTube API</span>
     </button>
   </nav>
 
@@ -235,5 +284,6 @@
   <audio id="audio-engine" preload="auto"></audio>
 
   <script src="app.js"></script>
+  <script src="liquid-navbar.js"></script>
 </body>
 </html>
